@@ -20,8 +20,6 @@ Model <- function(Y,X,upsilon,
     Gamma_vessel2 <-function(X) {SE(X,sigma = sigma1, rho = l1, specific_value = 1,Identity_row = 3,X_row = C)}
     Gamma_vessel3 <-function(X) {SE(X,sigma = sigma1, rho = l1, specific_value = 1,Identity_row = 4,X_row = C)}
     Gamma_vessel4 <-function(X) {SE(X,sigma = sigma1, rho = l1, specific_value = 1,Identity_row = 5,X_row = C)}
-    # Gamma_vessel1Spike <-function(X) {RQ(X,sigma = sigma2, rho = l2,a=a2, specific_value = 1,Identity_row = 5,X_row = C)}
-    # Gamma_vessel2Spike <-function(X) {RQ(X,sigma = sigma2, rho = l2,a=a2, specific_value = 1,Identity_row = 6,X_row = C)}
 
     Gamma_vessel1Spike <-function(X) {RQ.warp(X,sigma =sigma2,rho = l2, a= a2,specific_value = 1,Identity_row = 8,X_row = C)}
     Gamma_vessel2Spike <-function(X) {RQ.warp(X,sigma =sigma2,rho = l2, a= a2,specific_value = 1,Identity_row = 9,X_row = C)}
@@ -37,7 +35,6 @@ Model <- function(Y,X,upsilon,
 
     MLL <- function(Y,X,upsilon,
                 sigma1,l1,
-                #  nu,l2,
                 sigma2,l2,a2,
                 noise
                 ){
@@ -54,19 +51,13 @@ Model <- function(Y,X,upsilon,
     # beta  <- 12.24
     alpha1 <- 20
     beta1  <- 42  # with model around 2
-    
     alpha2 <- 20
     beta2 <- 21 # with mode around 1
-
-    log_prior_l1 <- (alpha1 * log(beta1) - lgamma(alpha1) - (alpha1 + 1) * log(l1) - beta1/ l1)
-    log_prior_l2 <- (alpha2 * log(beta2) - lgamma(alpha2) - (alpha2 + 1) * log(l2) - beta2/ l2)
-
-    # # prior for sigma ~ InverseGamma(alpha,beta) 
     alpha_s1 <- 20
     beta_s1  <- 14.7 # with mode around 0.7
 
-    # alpha_s2 <- 5
-    # beta_s2 <- 18
+    log_prior_l1 <- (alpha1 * log(beta1) - lgamma(alpha1) - (alpha1 + 1) * log(l1) - beta1/ l1)
+    log_prior_l2 <- (alpha2 * log(beta2) - lgamma(alpha2) - (alpha2 + 1) * log(l2) - beta2/ l2)
 
     log_prior_s1 <- (alpha_s1 * log(beta_s1) - lgamma(alpha_s1) - (alpha_s1 + 1) * log(sigma1) - beta_s1/ sigma1)
     log_prior_s2 <- (alpha1 * log(beta1) - lgamma(alpha1) - (alpha1 + 1) * log(sigma2) - beta1/ sigma2)

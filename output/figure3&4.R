@@ -1,10 +1,6 @@
 
 
 
-# hyper <- c(getBestPars(optObj)$sigma1,getBestPars(optObj)$l1,
-#            getBestPars(optObj)$sigma2,getBestPars(optObj)$l2,2,
-          #  getBestPars(optObj)$sigma2,getBestPars(optObj)$l2,getBestPars(optObj)$a2,
-          #  1)
 hyper <- c(0.8604717,2.067525,2.616742,1.016639,2,1)
 mod <- Model(Y,X,upsilon,sigma1=hyper[1],l1=hyper[2],
                           # sigma2= hyper[4],l2=hyper[5],
