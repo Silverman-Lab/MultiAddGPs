@@ -1,12 +1,17 @@
 
+source('/home/thcodelia/Odelia/Project/MultiAddGPs/src/02_analysis.R', chdir = TRUE)
 
-
-hyper <- c(0.8604717,2.067525,2.616742,1.016639,2,1)
+hyper <- c(getBestPars(optObj)$sigma1,getBestPars(optObj)$l1,
+           getBestPars(optObj)$sigma2,getBestPars(optObj)$l2,2,
+           1)
+           
 mod <- Model(Y,X,upsilon,sigma1=hyper[1],l1=hyper[2],
-                          # sigma2= hyper[4],l2=hyper[5],
                          sigma2=hyper[3],l2=hyper[4], 
                          a2 = hyper[5],
                          noise = hyper[6])
+
+
+
 
 ## Prediction: plot in CLR space  ##########
 mod_clr <- to_clr(mod)
@@ -26,7 +31,6 @@ predicted_clr_tidy <- gather_array(predicted,val,coord,sample,iter)%>%
     group_by(Vessel,coord,Hour)%>%
     summarise_posterior(val,na.rm = TRUE)%>%
     ungroup()
-    # filter(coord == 5)
 
 Y_clr_tidy <- clr_array(Y+0.65, parts = 1) %>% 
   gather_array(mean, coord, sample) %>% 
@@ -36,6 +40,7 @@ Y_clr_tidy <- clr_array(Y+0.65, parts = 1) %>%
   mutate(Hour = rep(Hour,D))%>%
   mutate(Vessel = as.factor(rep(Vessel,D)))%>%
   mutate(source = "Y")
+  # filter(coord == 5)
 
 custom_colors <- c('#5ba300','#f57600','#8babf1','#0073e6')
 custom_colors_v12 <- c('#5ba300','#f57600')
@@ -50,15 +55,12 @@ facet_lims <- Y_clr_tidy %>%
 predicted_clr_tidy <- predicted_clr_tidy %>%
   left_join(facet_lims, by = "coord")
 
-predicted_clr_tidy$Vessel <- paste("Vessel", predicted_clr_tidy$Vessel)
-
-
 p <- ggplot(predicted_clr_tidy,aes(x=Hour,y=mean))+
       facet_wrap(~coord, scales="free_y", ncol=5) +
       geom_ribbon(aes(ymin = p2.5, ymax = p97.5,fill= Vessel), alpha = 0.4) +
       # geom_ribbon(aes(ymin = p25,  ymax = p75,  fill= Vessel), alpha = 0.4) +
       geom_line(aes(color=Vessel),alpha = 0.7,size = 0.7) +
-      geom_point(data = Y_clr_tidy, aes(x = Hour, y = mean,color =Vessel),alpha =0.3)+
+      # geom_point(data = Y_clr_tidy, aes(x = Hour, y = mean,color=Vessel),alpha =0.3)+
       scale_fill_manual(values = custom_colors) +        
       scale_color_manual(values = custom_colors) +
       # Additional customizations
@@ -117,6 +119,7 @@ combine_vessel_summaries <- function(mod_clr, lambda_component,filter_lambda_ves
   
   return(combined_summary)
 }
+
 
 
 dis_allcoord <- combine_vessel_summaries(mod_clr,lambda_component = c(5,6), Vessel1, Vessel2, Hour, c(1:10))%>%
