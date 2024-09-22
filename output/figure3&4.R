@@ -32,24 +32,10 @@ predicted_clr_tidy <- gather_array(predicted,val,coord,sample,iter)%>%
     summarise_posterior(val,na.rm = TRUE)%>%
     ungroup()
 
-Y_clr_tidy <- clr_array(Y+0.65, parts = 1) %>% 
-  gather_array(mean, coord, sample) %>% 
-  mutate(coord = paste0("CLR(",taxa_names[coord], ")"))%>%
-  mutate(coord = factor(coord,levels = unique(coord)))%>%  
-  arrange(coord) %>%
-  mutate(Hour = rep(Hour,D))%>%
-  mutate(Vessel = as.factor(rep(Vessel,D)))%>%
-  mutate(source = "Y")
-  # filter(coord == 5)
 
 custom_colors <- c('#5ba300','#f57600','#8babf1','#0073e6')
 custom_colors_v12 <- c('#5ba300','#f57600')
 
-
-# Calculate ymin and ymax for each facet
-facet_lims <- Y_clr_tidy %>%
-  group_by(coord) %>%
-  summarise(ymin = min(mean), ymax = max(mean))
 
 # Merge the calculated limits back to the original data
 predicted_clr_tidy <- predicted_clr_tidy %>%
@@ -60,7 +46,6 @@ p <- ggplot(predicted_clr_tidy,aes(x=Hour,y=mean))+
       geom_ribbon(aes(ymin = p2.5, ymax = p97.5,fill= Vessel), alpha = 0.4) +
       # geom_ribbon(aes(ymin = p25,  ymax = p75,  fill= Vessel), alpha = 0.4) +
       geom_line(aes(color=Vessel),alpha = 0.7,size = 0.7) +
-      # geom_point(data = Y_clr_tidy, aes(x = Hour, y = mean,color=Vessel),alpha =0.3)+
       scale_fill_manual(values = custom_colors) +        
       scale_color_manual(values = custom_colors) +
       # Additional customizations
