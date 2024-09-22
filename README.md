@@ -1,4 +1,4 @@
-# Multinomial Logistic Normal Additive Gaussian Process Model (MultiAddGPs)
+# MLN Additive Gaussian Process Model (MultiAddGPs)
 
 ## Brief Overview
 
