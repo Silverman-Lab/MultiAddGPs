@@ -40,5 +40,6 @@ To reproduce Figures 3 and 4, follow these steps:
 I have created a vignette demonstrating how to apply MultiAddGPs in practice using artificial gut data. You can view it [here](https://tinghua-chen.github.io/blog/MultiAddGPs/).
 
 Note: MultiAddGPs extends the functionality of our previous [fido](https://jsilve24.github.io/fido/articles/non-linear-models.html) package to accommodate both linear and nonlinear modeling in count data. If you haven't done so yet, I highly recommend reviewing the *basset* vignette in the *fido* package before working through the above example.
+
 ## Contact
 If you have any questions, don't hesitate to create an issue or reach out to tuc579@psu.edu
