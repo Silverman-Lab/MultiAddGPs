@@ -5,7 +5,7 @@ This repository contains code accompanying XXX
 ## Brief Overview
 **MultiAddGPs** is a powerful statistical model designed to analyze additive linear and nonlinear effects on compositional count data, particularly suited for relative abundance analysis in microbiome studies or similar high-dimensional compositional datasets. The model leverages the Multinomial Logistic-Normal distribution, combined with Additive Gaussian Processes, to capture complex mixed linear and non-linear dynamics.
 
-![alt text](../Project1_AGP/results/Simulation/Simulation2/9_25_2024/simulation_paper.png)
+![alt text](figures/simulation_paper.png)
 
 
 ## Reproducibility
@@ -30,8 +30,6 @@ To generate Figure 1, simply run the `figure1.R` script. This will reproduce the
 ### Reproducing Figures 3 & 4:
 To reproduce Figures 3 and 4, follow these steps:
 
-
-To reproduce Figure 3 & 4 in the main text:
 1. Run `01_data_preprocessing.R` to load and preprocess the artificial gut dataset
 3. Run `02_analysis.R` to perform the required analysis on the dataset
 4. Run `figure3&4.R` to generate Figures 3 and 4.
