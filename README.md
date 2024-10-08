@@ -1,5 +1,5 @@
 ## MultiAddGPs (Multinomial Logistic Normal Additive Gaussian Process Model)
-This repository contains code accompanying XXX
+This repository contains code accompanying [https://arxiv.org/abs/2410.03911](https://arxiv.org/abs/2410.03911)
 
 
 ## Brief Overview
