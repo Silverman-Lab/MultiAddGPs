@@ -20,19 +20,15 @@ git clone https://github.com/tinghua-chen/MultiAddGPs.git
 packages <- c("fido","dplyr","LaplaceDemon","mvtnorm","MASS","ggplot2","rBayesianOptimization","lubridate","gridExtra")
 install.packages(packages)
 ```
-3. Run `00_package_loading.R` to loading all necessary dataset
+3. Run `00_package_loading.R` to load all necessary dataset
+4. Run `helper_functions.R` to load all necessary functions
 
 
+### Reproducing Figures:
 
-### Reproducing Figure 1:
-To generate Figure 1, simply run the `figure1.R` script. This will reproduce the figure based on the default dataset and model configuration.
-
-### Reproducing Figures 3 & 4:
-To reproduce Figures 3 and 4, follow these steps:
-
-1. Run `01_data_preprocessing.R` to load and preprocess the artificial gut dataset
+1. Run `01_data_preprocessing.R` to load and preprocess dataset
 3. Run `02_analysis.R` to perform the required analysis on the dataset
-4. Run `figure3&4.R` to generate Figures 3 and 4.
+4. Run `03_result.R` to generate Figures.
 
 
 ## Example
