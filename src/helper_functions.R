@@ -1,23 +1,27 @@
 ## This files contains all kernel functions, functions created for summarizing the results, and coverage ratio function
 
-## warp function
-warp.fun <- function(t,a=2.5,b=-1.2,c=2.5){
-  omega <- 2*c*(-0.5 + 1/(1+ exp(-a*(t-b))))
+
+
+
+# @ mode is the peak of the curve 
+# @ scale is the width of the curve
+# @ skew is the skewness of the curve
+# @ return a skewed Gaussian function with heavy right tail
+# The parameters should be determined case by case
+warp <- function(x, mode = mode, scale = scale, skew = skew) {
+  # Shift x so that mode is centered at zero
+  x_shifted <- (x - mode) / scale
   
-  # Calculate the minimum and maximum values of omega
-  omega_min <- min(omega)
-  omega_max <- max(omega)
-
-  # Desired interval
-  desired_min <- -4.3
-  desired_max <- 1.6
-
-  # Linearly scale omega to the desired interval
-  omega_scaled <- ((omega - omega_min) / (omega_max - omega_min)) * (desired_max - desired_min) + (desired_min)
-
-  return(omega_scaled)
+  # Apply a skewed Gaussian function with heavy right tail
+  gaussian_core <- exp(-0.5 * x_shifted^2)  # Standard Gaussian curve
+  skewed_tail <- 1 / (1 + exp(-skew * x_shifted))  # Logistic function for right-heavy tail
+  transformed_x <- gaussian_core * skewed_tail
+  
+  # Normalize to output btw [-1, 1]
+  transformed_x <- 2 * (transformed_x - min(transformed_x)) / (max(transformed_x) - min(transformed_x)) - 1
+  
+  return(transformed_x)
 }
-
 
 ## Squared Exponential Kernel
 SE <- function(X, sigma = 1, rho = median(as.matrix(dist(t(X)))), 
@@ -225,7 +229,7 @@ return(summary)
 
 standardize_function <-function(X,iteration = TRUE){
   if (iteration == TRUE){
-    lambda <- array(dim =c(D-1,N,samplesize))
+    lambda <- array(dim =c(dim(X)[1],dim(X)[2],dim(X)[3]))
     for (j in 1:dim(X)[1]){
       for (i in 1:dim(X)[3]){
         lambda[j,,i] <- (X[j,,i]- mean(X[j,,i]))
@@ -233,7 +237,7 @@ standardize_function <-function(X,iteration = TRUE){
     }
   }
   else{
-    lambda <- array(dim =c(D-1,N))
+    lambda <- array(dim =c(dim(X)[1],dim(X)[2]))
     for (j in 1:dim(X)[1]){
         lambda[j,] <- X[j,]- mean(X[j,])
         }
@@ -271,4 +275,97 @@ coverage.ratio <- function(true, pred,pesudo){
      coverage.ratio <- pred.coverage_percent/pesudo.coverage_percent 
   }
   return(coverage.ratio) 
+}
+
+
+alr_to_clr <- function(f,clr_D){
+  f <- alrInv_array(f,clr_D,1)
+  f <- clr_array(f,1)
+  return(f)
+}
+
+Eigenvalue_decomp <- function(X){
+    es <- eigen(X)
+    es$vectors <- Re(es$vectors)
+    es$values <- Re(es$values)
+    es$values[(es$values < 1e-12)&(es$values> -1e-12)] <- 0
+    # If any eigen values are large negative throw error (something wrong)
+    if (any(es$values < -1e-12)) stop("Non-trivial negative eigenvalues present")
+    # calculate square root and reveal rank (k)
+    k <- sum(es$values > 0)
+    L_product <- es$vectors%*%diag(sqrt(es$values))
+    L_product[,1:k, drop=F]
+    return(L_product)
+}
+
+# log_Matrix_Normal_Density <- function(X,M,U,V) {
+#    m <- nrow(M)
+#    n <- ncol(X)
+
+#    x <- as.vector(X)
+#    mean_vector <- as.vector(M)
+
+#    cov_matrix <- kronecker(V,U)
+
+#    density <- dmvnorm(x, mean_vector, cov_matrix,log = TRUE)
+#    return(density)
+# }
+
+
+## this used for simulation 1 only
+Summary_taxa2 <- function(X,iteration = TRUE){
+  if (iteration == TRUE){
+    summary <- gather_array(X,val,coord,sample,iter)%>%
+      arrange(iter,coord) %>%
+      mutate(time = rep(Lambda_time,samplesize*(D-1))) %>%
+      mutate(Date = rep(X1$Date,samplesize*(D-1)))%>%
+      mutate(batch = rep(X1$batch,samplesize*(D-1)))%>%
+      filter(!is.na(val)) %>%
+      filter(coord == 2) %>%
+      group_by(Date,batch) %>%
+      summarise_posterior(val, na.rm=TRUE) %>%
+      ungroup()
+  }
+  else{
+    summary <- gather_array(X,val,coord,sample)%>%
+      arrange(coord) %>%
+      mutate(time = rep(Lambda_time,(D-1))) %>%
+      mutate(Date = rep(X1$Date,(D-1)))%>%
+      mutate(batch = rep(X1$batch,(D-1)))%>%
+      filter(!is.na(val)) %>%
+      filter(coord == 2) %>%
+      group_by(Date,batch) %>%
+      summarise_posterior(val, na.rm=TRUE) %>%
+      ungroup()
+  }
+  return(summary)
+}
+
+## this used for simulation 1 only
+Summary <- function(X,iteration = TRUE){
+  if (iteration == TRUE){
+    summary <- gather_array(X,val,coord,sample,iter)%>%
+      arrange(iter,coord) %>%
+      mutate(time = rep(Lambda_time,samplesize*(D-1))) %>%
+      mutate(Date = rep(X1$Date,samplesize*(D-1)))%>%
+      mutate(batch = rep(X1$batch,samplesize*(D-1)))%>%
+      filter(!is.na(val)) %>%
+    #   filter(coord == 2) %>%
+      group_by(coord,Date,batch) %>%
+      summarise_posterior(val, na.rm=TRUE) %>%
+      ungroup()
+  }
+  else{
+    summary <- gather_array(X,val,coord,sample)%>%
+      arrange(coord) %>%
+      mutate(time = rep(Lambda_time,(D-1))) %>%
+      mutate(Date = rep(X1$Date,(D-1)))%>%
+      mutate(batch = rep(X1$batch,(D-1)))%>%
+      filter(!is.na(val)) %>%
+    #   filter(coord == 2) %>%
+      group_by(coord,Date,batch) %>%
+      summarise_posterior(val, na.rm=TRUE) %>%
+      ungroup()
+  }
+  return(summary)
 }
