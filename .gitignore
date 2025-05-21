@@ -1,1 +1,3 @@
 *.rds
+*sim.RData
+*sim_figure1.R
