@@ -108,62 +108,6 @@ RQ <- function(X,sigma =1, rho = median(as.matrix(dist(t(X)))), a = 1,
 
 
 
-# Squared Exponential Kernel with warp function
-# params: X, sigma, rho, specific_value, Identity_row, X_row, warp.fun, jitter
-# warp.fun: function to warp the X, return Z = f(X)
-SE.warp <- function(X,sigma =1, rho = median(as.matrix(dist(t(X)))),
-                    specific_value = NULL, Identity_row=NULL,X_row, warp.fun = NULL,jitter = 1e-10){
-
-  if (is.null(specific_value) & is.null(Identity_row)){
-      dist <- as.matrix(dist(t(X[X_row,,drop=F])))
-      G <- sigma^2 * exp(-dist^2/(2 * rho^2)) + jitter * diag(ncol(dist))
-  }
-  else {
-  block <- t(t(X[Identity_row,]))%*%t(X[Identity_row,]) # block matrix
-      if (is.null(warp.fun)){
-        dist <- as.matrix(dist(t(X[X_row,,drop=F])))
-        G <- sigma^2 * exp(-dist^2/(2 * rho^2))
-        G <- block*G + + jitter * diag(ncol(dist))       
-      }
-      else {
-        Z <- warp.fun(t(X[X_row,]))
-        # x <- Z * X[Identity_row,]
-        dist <- as.matrix(dist(t(Z)))
-        G <- sigma^2 * exp(-dist^2/(2 * rho^2))
-        G <- block*G  + jitter*diag(ncol(dist))
-      }    
-  }
-  return(G)
-}
-
-# Rational Quadratic Kernel with warp function
-RQ.warp <- function(X,sigma =1, rho = median(as.matrix(dist(t(X)))), a = 1,
-              specific_value=NULL,Identity_row = NULL,X_row, warp.func = NULL,jitter = 1e-10){
-  
-  if (is.null(specific_value) & is.null(Identity_row)){
-      dist <- as.matrix(dist(t(X[X_row,,drop=F])))
-      G <- sigma^2 *(1+ (dist^2/(2 * a*rho^2)))^(-a) + jitter * diag(ncol(dist))
-  }
-  else {
-    block <- t(t(X[Identity_row,]))%*%t(X[Identity_row,]) # block matrix
-    if (is.null(warp.func)){
-      dist <- as.matrix(dist(t(X[X_row,,drop=F])))
-      G <- sigma^2 *(1+ (dist^2/(2 * a*rho^2)))^(-a) 
-      G <- block* G + jitter * diag(ncol(dist))
-    }
-    else {
-      Z <- warp.fun(t(X[X_row,]))
-      dist <- as.matrix(dist(t(Z)))
-      G <- sigma^2 *(1+ (dist^2/(2 * a*rho^2)))^(-a)
-      G <- block* G + jitter * diag(ncol(dist))
-    }
-  }
-  return(G)
-}
-
-
-
-
 # Function for summary lambda (CLR)
 # 0. X: mod$Lambda[[num]]
 # 1.filter_lambda: filter the lambda based on the filter_lambda, eg. filter_lambda = row of dummy lambda, must be defined as dummy

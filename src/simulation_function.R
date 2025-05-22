@@ -4,7 +4,11 @@ source('/home/thcodelia/Odelia/Project/MultiAddGPs/src/package_loading.R', chdir
 
 
 
-Simulation_linear <- function(D=4,N=500,hyper_params=c(3,5,1,20),multi.depth=200,seed=534536){
+Simulation_linear <- function(D=4,
+                              N=500,
+                              hyper_params=c(3,5,1,20),
+                              multi.depth=200,
+                              seed=534536){
         set.seed(seed)
         D <- D # number of dimensions
         C <- 3 # number of covariates
@@ -185,7 +189,11 @@ Simulation <- function( D=4,
 #' @return function return a list of simulated data
 #' @details 
 #' @examples
-Simulation_warp <- function(D=3,N=384,hyper_params=c(3,4,1,0.5),multi.depth=200,seed=5336){
+Simulation_warp <- function(D=3,
+                            N=384,
+                            hyper_params=c(3,4,1,0.5),
+                            multi.depth=200,
+                            seed=5336){
         set.seed(seed)
         D <- D # number of dimensions
         C <- 3 # number of covariates
