@@ -6,6 +6,7 @@ R scripts for reproducing figures in the MultiAddGPs manuscript.
 ## Gut analyses
 
 Human gut: Main Figure 3 and Web Figures 9–12.
+
 Artificial gut: Main Figure 4 and Web Figures 6–8.
 
 ```sh
