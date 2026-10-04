@@ -1,3 +1,5 @@
-*.rds
-*sim.RData
-*sim_figure1.R
+# Large local results file (approximately 179 MiB).
+# GitHub blocks regular Git files larger than 100 MiB.
+# Keep this file locally; regenerate it with simulation2_fit.R when needed.
+# Ignore rules match paths, not file sizes; add future large files explicitly.
+/data/Data0_Simulation/data/Simulation_result2.rds
