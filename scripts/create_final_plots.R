@@ -37,6 +37,13 @@ model_colors <- c(
   GAM = "#009E73"
 )
 
+model_shapes <- c(
+  MultiAddGPs = 16,     # circle
+  Lgpr_Gaussian = 17,   # triangle
+  Lgpr_nb = 15,         # square
+  GAM = 18              # diamond
+)
+
 components <- c(
   "Batch", "General", "Intervention", "Cumulative"
 )
@@ -77,13 +84,14 @@ create_metric_grid <- function(data, x_var, x_label, title) {
 
   rmse_plot <- ggplot(
     data,
-    aes(x = x_axis, y = RMSE, color = model, group = model)
+    aes(x = x_axis, y = RMSE, color = model, shape = model, group = model)
   ) +
-    guides(color = "none") +
+    guides(color = "none",shape = "none") +
     facet_grid(. ~ component, scales = "free_y") +
     geom_line(linewidth = 0.45, na.rm = TRUE) +
-    geom_point(size = 1.35, na.rm = TRUE) +
+    geom_point(size = 2, na.rm = TRUE) +
     scale_color_manual(values = model_colors, drop = FALSE) +
+    scale_shape_manual(values = model_shapes, drop = FALSE)+
     labs(title = title, x = NULL, y = "RMSE") +
     base_theme +
     theme(
@@ -169,11 +177,12 @@ create_runtime_plot <- function(data, x_var, x_label, y_label = NULL) {
       x = x_axis,
       y = mean_estimated_total_runtime_sec,
       color = model,
-      group = model
+      group = model,
+      shape = model,
     )
   ) +
     geom_line(linewidth = 0.45, na.rm = TRUE) +
-    geom_point(size = 1.6, na.rm = TRUE) +
+    geom_point(size = 2, na.rm = TRUE) +
     scale_y_log10(
       labels = scales::label_number(accuracy = 1)
     ) +
@@ -182,6 +191,7 @@ create_runtime_plot <- function(data, x_var, x_label, y_label = NULL) {
       name = "Model",
       drop = FALSE
     ) +
+    scale_shape_manual(values = model_shapes, name = "Model", drop = FALSE) +
     labs(x = x_label, y = y_label) +
     theme_bw()
 }
