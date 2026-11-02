@@ -55,6 +55,8 @@ G <- cbind(diag(D - 1), -1)
 Xi <- (upsilon - D) * base::'%*%'(G, t(G))
 
 fit_model <- function(p, clr = TRUE) {
+  RNGkind("Mersenne-Twister", "Inversion", "Rejection")
+  set.seed(893)
   zero_mean <- function(X_new) matrix(0, D - 1, ncol(X_new))
   travel_kernel <- function(X_new)
     intervention_kernel(
@@ -132,10 +134,10 @@ if (use_optimization) {
   )
 } else {
   parameters <- list(
-    sigma_travel = 4.02057305496965,
-    rho_travel = 4.54129491899598,
-    sigma_general = 4.70576775364282,
-    rho_general = 0.883663832541547
+    sigma_travel = 4.4965735727024336,
+    rho_travel = 4.2663190258226358,
+    sigma_general = 4.8337230765223822,
+    rho_general = 0.99635139963646868
   )
 } # optimized hyperparameters
 
@@ -146,7 +148,7 @@ set.seed(893)
 fit <- fit_model(parameters)
 analysis <- analyze_balances(fit, metadata, reference_seed = 20261048)
 
-print(analysis$ranking[1:2, c("balance", "percent_mean", "percent_lower","percent_upper", "positive", "negative")],
+print(analysis$ranking[1, c("balance", "percent_mean", "percent_lower","percent_upper", "positive", "negative")],
   row.names = FALSE)
 
 # Figures -----------------------------------------------------------------
@@ -155,16 +157,16 @@ tree_plot <- plot_balance_tree(analysis)
 ggsave(file.path(figure_dir, "balance_tree.png"), tree_plot,
        width = 12, height = 18, dpi = 300)
 
-top2_plots <- plot_top_balances(analysis, analysis$contrast_matrix,
-                  file.path(figure_dir, "top.png"))
+plot_top_balances(analysis, analysis$contrast_matrix,
+                  file.path(figure_dir, "top_balances.png"))
 
 # Sensitivity analysis ---------------------------------------------------
 
 run_sensitivity <- TRUE
 
 if (run_sensitivity) {
-  # Fix top two balances from the baseline fit
-  selected <- analysis$ranking$balance[1:2]
+  # Fix the leading balance (w3) from the baseline fit
+  selected <- analysis$ranking$balance[1]
   basis <- analysis$contrast_matrix[, selected, drop = FALSE]
 
   # Baseline + ±10% perturbation of each hyperparameter
@@ -207,9 +209,9 @@ if (run_sensitivity) {
   }
 }
 
-# Priors used below: Normal(5, 1) for both amplitudes and travel length scale;
+# Prior distributions -----------------------------------------------------
+# Normal(5, 1) for both amplitudes and travel length scale;
 # InverseGamma(10, 8.8) for the general length scale.
-dir.create(figure_dir, showWarnings = FALSE)
 png(file.path(figure_dir, "Web_Figure9.png"), width = 2100, height = 1200, res = 300)
 par(mfrow = c(1, 2))
 prior_x <- seq(0, 10, length.out = 1000)

@@ -1,19 +1,18 @@
 # Reproducing the MultiAddGPs analyses
 
 R scripts for reproducing figures in the MultiAddGPs manuscript.
+Use fido version 1.1.5 for all analyses and simulations.
 
 
 ## Gut analyses
 
-Human gut: Main Figure 3 and Web Figures 9–12.
-
+Human gut: Main Figure 3 and Web Figures 9–11.
 Artificial gut: Main Figure 4 and Web Figures 6–8.
 
 ```sh
 Rscript --vanilla Human_gut_analysis.R
 Rscript --vanilla Artificial_gut_analysis.R
 ```
-
 ## Simulation 1
 
 Generate Main Figures 1–2 (comparison and runtime plots) from the supplied summary tables:

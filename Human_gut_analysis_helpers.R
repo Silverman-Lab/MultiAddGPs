@@ -201,6 +201,7 @@ balance_tree_panel <- function(diagram) {
 
 balance_trajectory_panel <- function(analysis, ranking) {
   trajectories <- analysis$trajectories
+  trajectories <- trajectories[trajectories$balance %in% ranking$balance, ]
   labels <- setNames(sprintf("%s (variance rank %d; %.1f%% explained)",
                              ranking$balance, ranking$rank,
                              ranking$percent_mean), ranking$balance)
@@ -240,15 +241,14 @@ balance_trajectory_panel <- function(analysis, ranking) {
 }
 
 plot_top_balances <- function(analysis, V, outfile) {
-  selected <- analysis$ranking$balance[1:2]
-  diagrams <- lapply(selected, function(balance) balance_display_tree(V, balance))
-  panels <- lapply(diagrams, balance_tree_panel)
-  trajectory_plot <- balance_trajectory_panel(analysis, analysis$ranking[1:2, ])
+  selected <- analysis$ranking$balance[1]
+  diagram <- balance_display_tree(V, selected)
+  partition_plot <- balance_tree_panel(diagram)
+  trajectory_plot <- balance_trajectory_panel(analysis, analysis$ranking[1, ])
 
-  plot <- gridExtra::arrangeGrob(panels[[1]], panels[[2]], trajectory_plot,
-                                 layout_matrix = rbind(c(1, 3), c(2, 3)),
+  plot <- gridExtra::arrangeGrob(partition_plot, trajectory_plot, ncol = 2,
                                  widths = c(0.6, 0.8))
-  grDevices::png(outfile, width = 8, height = 6, units = "in", res = 300,
+  grDevices::png(outfile, width = 8, height = 4.5, units = "in", res = 300,
                  type = "cairo")
   tryCatch({
     grid::grid.newpage()
@@ -262,15 +262,15 @@ plot_top_balances <- function(analysis, V, outfile) {
 }
 
 fixed_balance_proportions <- function(fit, basis) {
-  draws <- matrix(NA_real_, dim(fit$Lambda[[2]])[3], 3L,
-                  dimnames = list(NULL, c(colnames(basis), "combined")))
+  draws <- matrix(NA_real_, dim(fit$Lambda[[2]])[3], ncol(basis),
+                  dimnames = list(NULL, colnames(basis)))
   for (s in seq_len(nrow(draws))) {
     L <- centered_travel(fit, s)
     total <- sum(apply(L, 1L, stats::var))
     projected <- crossprod(basis, L)
-    draws[s, 1:2] <- apply(projected, 1L, stats::var) / total
-    draws[s, 3L] <- sum(draws[s, 1:2])
+    draws[s, ] <- apply(projected, 1L, stats::var) / total
   }
+  if (ncol(basis) > 1L) draws <- cbind(draws, combined = rowSums(draws))
   draws
 }
 
