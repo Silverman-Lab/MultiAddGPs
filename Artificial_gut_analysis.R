@@ -392,6 +392,6 @@ for (prior_shape in c(20, 10)) {
   plot(prior_x, dgamma(1 / prior_x, shape = prior_shape, rate = 16) / prior_x^2,
        type = "l", col = "darkred", lwd = 1.5, xlim = c(0, 4), yaxt = "n",
        xlab = sprintf("InverseGamma(%d, 16)", prior_shape),
-       ylab = if (prior_shape == 20) "Prior Density" else "")
+       ylab = "")
 }
 dev.off()

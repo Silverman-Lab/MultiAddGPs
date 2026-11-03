@@ -217,7 +217,7 @@ par(mfrow = c(1, 2))
 prior_x <- seq(0, 10, length.out = 1000)
 plot(prior_x, dnorm(prior_x, mean = 5, sd = 1),
      type = "l", col = "darkred", lwd = 1.5, xlim = c(0, 10), las = 1,
-     xlab = "Normal(5, 1)", ylab = "Prior Density")
+     xlab = "Normal(5, 1)", ylab = "")
 prior_x <- seq(0.001, 4, length.out = 1000)
 plot(prior_x, dgamma(1 / prior_x, shape = 10, rate = 8.8) / prior_x^2,
      type = "l", col = "darkred", lwd = 1.5, xlim = c(0, 4), las = 1,
