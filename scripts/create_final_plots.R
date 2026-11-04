@@ -184,7 +184,8 @@ create_runtime_plot <- function(data, x_var, x_label, y_label = NULL) {
     geom_line(linewidth = 0.45, na.rm = TRUE) +
     geom_point(size = 2, na.rm = TRUE) +
     scale_y_log10(
-      labels = scales::label_number(accuracy = 1)
+      breaks = c(1, 100, 10000),
+      labels = scales::label_number(big.mark = ",")
     ) +
     scale_color_manual(
       values = model_colors,
