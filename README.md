@@ -3,6 +3,27 @@
 R scripts for reproducing figures in the MultiAddGPs manuscript.
 Use fido version 1.1.5 for all analyses and simulations.
 
+## Dependencies
+
+Run all commands from the repository's top-level directory. The scripts require
+these R packages: `ape`, `Biostrings`, `car`, `compositions`, `dplyr`, `fido`,
+`future.apply`, `ggplot2`, `ggtext`, `ggtree`, `gridExtra`, `gtable`, `lgpr`,
+`MASS`, `mgcv`, `ParBayesianOptimization`, `patchwork`, `philr`, `phyloseq`,
+`plotly`, `purrr`, `reshape2`, `rstan`, `scales`, `stringr`, `tibble`, and `tidyr`.
+R's built-in packages, including `grid`, do not require separate installation.
+
+## Figure filenames
+
+Some scripts save figures under descriptive names rather than replacing the
+numbered manuscript figures already supplied in `figures/`. For example:
+
+| Generated file in `figures/` | Supplied manuscript figure |
+| --- | --- |
+| `final_metrics_plot.pdf` | `Main_Figure1.pdf` |
+| `final_runtime_plot.pdf` | `Main_Figure2.pdf` |
+| `top_balances.png` | `Main_Figure3.png` |
+| `Web_Figure3_corrected.pdf` (likewise 4 and 5) | `Web_Figure3.pdf` (likewise 4 and 5) |
+
 
 ## Gut analyses
 
